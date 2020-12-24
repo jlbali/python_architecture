@@ -47,3 +47,9 @@ pip install --upgrade pip
 python -m pip install --upgrade setuptools
 
 
+### VSCode
+
+Si se ejecuta "code ." desde un env, se aplica el environment actualmente activo.
+
+
+

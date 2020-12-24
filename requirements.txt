@@ -14,3 +14,4 @@ dash
 statsmodels
 pytest
 Flask
+sqlalchemy

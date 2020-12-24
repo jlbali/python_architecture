@@ -5,7 +5,7 @@ from typing import Optional, List, Set, NewType
 @dataclass(frozen=True)
 class OrderLine:
     order_id: str
-    sky: str
+    sku: str
     qty: int
 
 class Batch:
@@ -13,10 +13,32 @@ class Batch:
         self.reference = ref
         self.sku = sku
         self.eta = eta
-        self.available_quantity = qty
+        self._purchased_quantity = qty
+        self._allocations: Set[OrderLine] = set()
+
+    @property
+    def allocalted_quantity(self) -> int:
+        return sum(line.qty for line in self._allocations)
+
+    @property
+    def available_quantity(self) -> int:
+        return self._purchased_quantity - self.allocalted_quantity
+
 
     def allocate(self, line: OrderLine):
-        self.available_quantity -= line.qty
-    
+        if self.can_allocate(line):
+            if self.can_allocate(line):
+                self._allocations.add(line)
 
+    def deallocate(self, line: OrderLine):
+        if line in self._allocations:
+            self._allocations.remove(line)
 
+    def can_allocate(self, line: OrderLine):
+        return self.sku == line.sku and self.available_quantity >= line.qty
+
+    def __eq__(self, other: Batch):
+        return other.reference == self.reference
+
+    def __hash__(self):
+        return hash(self.reference)

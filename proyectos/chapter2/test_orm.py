@@ -103,19 +103,23 @@ def test_retrieveing_allocations():
     query = """
         INSERT INTO order_lines(ref, sku, qty)
         VALUES
-        ('order1', 'sku1', 12)
-        RETURNING id;
+        ('order1', 'sku1', 12);
     """
-    res = session.execute(query)
-    [olid] = res.fetchone()
+    session.execute(query)
+    [[olid]] = session.execute(
+        'SELECT id FROM order_lines WHERE ref=:ref AND sku=:sku',
+        dict(ref='order1', sku='sku1')
+    )
     query = """
         INSERT INTO batches(reference, sku, _purchased_quantity, eta)
         VALUES
-        ('batch1', 'sku1', 100, null)
-        RETURNING id;
+        ('batch1', 'sku1', 100, null);
     """
-    res = session.execute(query)
-    [bid] = res.fetchone()
+    session.execute(query)
+    [[bid]] = session.execute(
+        'SELECT id FROM batches WHERE reference=:ref AND sku=:sku',
+        dict(ref='batch1', sku='sku1')
+    )
     query = """
         INSERT INTO allocations(orderline_id, batch_id)
         VALUES

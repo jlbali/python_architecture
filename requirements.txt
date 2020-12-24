@@ -1,3 +1,4 @@
+cython
 numpy
 pandas
 scipy
@@ -11,4 +12,5 @@ spyder
 plotly
 dash
 statsmodels
-
+pytest
+Flask

@@ -2,7 +2,7 @@ import pytest
 from domain.batch import Batch
 from domain.order_line import OrderLine
 from adapters.repository_batch import FakeBatchRepository
-from service_layer.batch_services import InvalidSku, allocate
+from service_layer.batch_services import InvalidSku, allocate, add_batch, get_batch, get_batches
 
 class FakeSession():
     committed = False
@@ -35,6 +35,21 @@ def test_commit():
     assert session.committed is True
 
 
+def test_add_get_batch():
+    session = FakeSession()
+    repo = FakeBatchRepository([])
+    id = add_batch("b1", "LAMP", 250, None, repo, session)
+    batch = get_batch(id, repo)
+    assert batch.reference == "b1"
+    assert batch.sku == "LAMP"
+    assert batch.available_quantity == 250
 
 
+def test_add_get_batches():
+    session = FakeSession()
+    repo = FakeBatchRepository([])
+    add_batch("b1", "LAMP", 250, None, repo, session)
+    add_batch("b2", "LAMP", 20, None, repo, session)
+    batches = get_batches(repo)
+    assert len(batches) == 2
 

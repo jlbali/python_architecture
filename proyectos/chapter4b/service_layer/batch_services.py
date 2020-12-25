@@ -23,8 +23,16 @@ def allocate(line: OrderLine, repo: AbstractBatchRepository, session) -> str:
 def add_batch(
         ref: str, sku: str, qty: int, eta: Optional[date],
         repo: AbstractBatchRepository, session,
-):
-    repo.add(Batch(ref, sku, qty, eta))
+) -> int:
+    batch = Batch(ref, sku, qty, eta)
+    repo.add(batch)
     session.commit()
+    return batch.id
 
+def get_batch(id: int, repo: AbstractBatchRepository) -> Batch:
+    return repo.get(id)
+
+
+def get_batches(repo: AbstractBatchRepository) -> List[Batch]:
+    return repo.list()
 

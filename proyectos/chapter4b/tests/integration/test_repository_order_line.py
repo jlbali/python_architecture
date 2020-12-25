@@ -6,8 +6,7 @@ from tests.common_test import get_session, clear_all
 
 ## SQLAlchemy
 
-def test_repository_can_save_an_order_line():
-    session = get_session()
+def test_repository_can_save_an_order_line(session):
     item = OrderLine("order1", "SOAPDISH", 50)
 
     repo = rol.SqlAlchemyOrderLineRepository(session)
@@ -18,11 +17,9 @@ def test_repository_can_save_an_order_line():
     """
     rows = list(session.execute(query))
     assert rows == [("order1", "SOAPDISH", 50)]
-    clear_all()
 
 
-def test_repository_order_line_list():
-    session = get_session()
+def test_repository_order_line_list(session):
     item1 = OrderLine("order1", "SOAPDISH", 50)
     item2 = OrderLine("order2", "SOAPDISH", 70)
 
@@ -32,7 +29,6 @@ def test_repository_order_line_list():
     session.commit()
     retrieved = repo.list()
     assert retrieved == [item1,item2]
-    clear_all()
 
 
 
@@ -50,19 +46,16 @@ def insert_order_line(session):
     [[orderline_id]] = session.execute(query)
     return orderline_id
 
-def test_repository_can_retrieve_an_order_line_by_id():
-    session = get_session()
+def test_repository_can_retrieve_an_order_line_by_id(session):
     item_id = insert_order_line(session)    
     session.commit()
     repo = rol.SqlAlchemyOrderLineRepository(session)
     item_ret = repo.get(item_id)
     assert item_ret.ref == "order1"
     assert item_ret.sku == "SOFA"
-    clear_all()
 
 
-def test_repository_can_update_an_order_line():
-    session = get_session()
+def test_repository_can_update_an_order_line(session):
     item_id = insert_order_line(session)    
     repo = rol.SqlAlchemyOrderLineRepository(session)
     item_ret = repo.get(item_id)
@@ -70,10 +63,8 @@ def test_repository_can_update_an_order_line():
     session.commit()
     item_ret = repo.get(item_id)
     assert item_ret.reference == "changed"
-    clear_all()
 
-def test_repository_can_delete_an_order_line_by_id():
-    session = get_session()
+def test_repository_can_delete_an_order_line_by_id(session):
     item_id = insert_order_line(session)    
     session.commit()
     repo = rol.SqlAlchemyOrderLineRepository(session)
@@ -81,11 +72,9 @@ def test_repository_can_delete_an_order_line_by_id():
     session.commit()
     items_ret = repo.list()
     assert len(items_ret)==0
-    clear_all()
     
 
-def test_repository_can_delete_an_order_line_by_ref():
-    session = get_session()
+def test_repository_can_delete_an_order_line_by_ref(session):
     item_id = insert_order_line(session)    
     session.commit()
     repo = rol.SqlAlchemyOrderLineRepository(session)
@@ -93,7 +82,6 @@ def test_repository_can_delete_an_order_line_by_ref():
     session.commit()
     items_ret = repo.list()
     assert len(items_ret)==0
-    clear_all()
 
 
 ## Fake Repository

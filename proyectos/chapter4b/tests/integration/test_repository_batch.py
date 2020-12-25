@@ -7,8 +7,7 @@ from tests.common_test import get_session, clear_all
 
 ## SQLAlchemy
 
-def test_repository_can_save_a_batch():
-    session = get_session()
+def test_repository_can_save_a_batch(session):
     batch = Batch("batch1", "SOAPDISH", 100, eta=None)
 
     repo = rb.SqlAlchemyBatchRepository(session)
@@ -19,11 +18,9 @@ def test_repository_can_save_a_batch():
     """
     rows = list(session.execute(query))
     assert rows == [("batch1", "SOAPDISH", 100, None)]
-    clear_all()
 
 
-def test_repository_batch_list():
-    session = get_session()
+def test_repository_batch_list(session):
     batch1 = Batch("batch1", "SOAPDISH", 100, eta=None)
     batch2 = Batch("batch2", "FURNITURE", 50, eta=None)
 
@@ -34,7 +31,6 @@ def test_repository_batch_list():
     retrieved = repo.list()
 
     assert retrieved == [batch1,batch2]
-    clear_all()
 
 
 
@@ -74,8 +70,7 @@ def insert_allocation(session, orderline_id, batch_id):
     """.format(orderline_id=orderline_id, batch_id=batch_id)
     session.execute(query)
 
-def test_repository_can_retrieve_a_batch_with_allocations():
-    session = get_session()
+def test_repository_can_retrieve_a_batch_with_allocations(session):
     orderline_id = insert_order_line(session)
     batch1_id = insert_batch(session,"batch1")
     insert_batch(session, "batch2")
@@ -91,21 +86,17 @@ def test_repository_can_retrieve_a_batch_with_allocations():
     assert retrieved._allocations == {
         OrderLine("order1", "SOFA", 12)
     }
-    clear_all()
 
 
-def test_repository_can_retrieve_a_batch_by_id():
-    session = get_session()
+def test_repository_can_retrieve_a_batch_by_id(session):
     batch_id = insert_batch(session,"batch1")    
     repo = rb.SqlAlchemyBatchRepository(session)
     batch_ret = repo.get(batch_id)
     assert batch_ret.reference == "batch1"
     assert batch_ret.sku == "SOFA"
-    clear_all()
 
 
-def test_repository_can_update_a_batch():
-    session = get_session()
+def test_repository_can_update_a_batch(session):
     batch_id = insert_batch(session,"batch1")    
     repo = rb.SqlAlchemyBatchRepository(session)
     batch_ret = repo.get(batch_id)
@@ -113,10 +104,8 @@ def test_repository_can_update_a_batch():
     session.commit()
     batch_ret = repo.get(batch_id)
     assert batch_ret.reference == "changed"
-    clear_all()
 
-def test_repository_can_delete_a_batch_by_id():
-    session = get_session()
+def test_repository_can_delete_a_batch_by_id(session):
     batch_id = insert_batch(session,"batch1")    
     session.commit()
     repo = rb.SqlAlchemyBatchRepository(session)
@@ -124,11 +113,9 @@ def test_repository_can_delete_a_batch_by_id():
     session.commit()
     batches_ret = repo.list()
     assert len(batches_ret)==0
-    clear_all()
     
 
-def test_repository_can_delete_a_batch_by_ref():
-    session = get_session()
+def test_repository_can_delete_a_batch_by_ref(session):
     batch_id = insert_batch(session,"batch1")    
     session.commit()
     repo = rb.SqlAlchemyBatchRepository(session)
@@ -136,7 +123,6 @@ def test_repository_can_delete_a_batch_by_ref():
     session.commit()
     batches_ret = repo.list()
     assert len(batches_ret)==0
-    clear_all()
 
 
 ## Fake Repository

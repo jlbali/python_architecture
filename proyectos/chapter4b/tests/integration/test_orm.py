@@ -6,8 +6,7 @@ from datetime import date
 from tests.common_test import get_session, clear_all
 
 
-def test_orderline_mapper_can_load_lines():
-    session = get_session()
+def test_orderline_mapper_can_load_lines(session):
     query = """
         INSERT INTO order_lines (ref, sku, qty) VALUES
         ('order1', 'CHAIR', 12),
@@ -21,20 +20,16 @@ def test_orderline_mapper_can_load_lines():
         OrderLine("order3", "LIPSTICK", 14),
     ]
     obtained = session.query(OrderLine).all()
-    clear_all()
     assert  obtained == expected
 
-def test_orderline_mapper_can_save_lines():
-    session = get_session()
+def test_orderline_mapper_can_save_lines(session):
     new_line = OrderLine("order1", "DECORATION", 12)
     session.add(new_line)
     session.commit()
     rows = list(session.execute("SELECT ref,sku,qty from 'order_lines'"))
-    clear_all()
     assert rows == [("order1", "DECORATION",12)]
 
-def test_retrieving_batches():
-    session = get_session()    
+def test_retrieving_batches(session):
     query = """
         INSERT INTO batches(reference, sku, _purchased_quantity, eta)
         VALUES 
@@ -47,23 +42,19 @@ def test_retrieving_batches():
         Batch("batch2", "sku2", 200, eta=date(2011,4,11)),
     ]
     obtained = session.query(Batch).all()
-    clear_all()
     assert obtained == expected
 
 
-def test_saving_batches():
-    session = get_session()        
+def test_saving_batches(session):   
     batch = Batch("batch1", "sku1", 100, eta=None)
     session.add(batch)
     session.commit()
     rows = list(session.execute(
         "SELECT reference, sku, _purchased_quantity, eta from 'batches'"
     ))
-    clear_all()
     assert rows == [('batch1', 'sku1', 100, None)]
 
-def test_saving_allocations():
-    session = get_session()        
+def test_saving_allocations(session):
     batch = Batch("batch1", "sku1", 100, eta=None)
     line = OrderLine("order1", "sku1", 10)
     batch.allocate(line)
@@ -77,11 +68,9 @@ def test_saving_allocations():
     """
     rows = list(session.execute(query))
     assert rows == [(line.ref, batch.reference)]
-    clear_all() # Si esto se coloca antes, se pierdes los atributos de los objetos.
 
 
-def test_retrieveing_allocations():
-    session = get_session()
+def test_retrieveing_allocations(session):
     query = """
         INSERT INTO order_lines(ref, sku, qty)
         VALUES
@@ -112,4 +101,3 @@ def test_retrieveing_allocations():
     assert batch._allocations == {
         OrderLine("order1", "sku1", 12)
     }
-    clear_all()

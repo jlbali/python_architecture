@@ -13,6 +13,8 @@ Tocando el objeto y haciendo commit ya se modifica en la base de datos (Ok)
     - Dockerization (Docker and docker-compose)
     - Makefile
     - endpints (flask_app y tests asociados en test_api.py)
+    - Agregar un CRUD básico de Batches.
+
 
 
 

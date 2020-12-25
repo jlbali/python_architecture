@@ -16,6 +16,8 @@ Tocando el objeto y haciendo commit ya se modifica en la base de datos (Ok)
     - Arreglar el problema con los tests que fallan de API (ok)
     - Agregar un CRUD básico de Batches junto con sus tests en todos los niveles (faltan services y api).
 
+- Faltan los tests para la API de get_batch y get_batches.
+
 
 
 

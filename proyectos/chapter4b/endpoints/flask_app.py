@@ -22,6 +22,8 @@ def ping():
     return 'pong', 200
 
 
+### BATCHES ##########
+
 @app.route("/batch", methods=['POST'])
 def add_batch():
     session = get_session()
@@ -35,6 +37,19 @@ def add_batch():
     )
     return 'OK', 201
 
+@app.route("/batch/<id>", methods=['GET'])
+def get_batch(id):
+    session = get_session()
+    repo = batch_repository.SqlAlchemyBatchRepository(session)
+    batch = batch_services.get_batch(id)
+    return jsonify(batch), 200
+
+@app.route("/batches", methods=['GET'])
+def get_batches():
+    session = get_session()
+    repo = batch_repository.SqlAlchemyBatchRepository(session)
+    batches = batch_services.list()
+    return jsonify(batches), 200
 
 @app.route("/allocate", methods=['POST'])
 def allocate_endpoint():

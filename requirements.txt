@@ -15,3 +15,5 @@ statsmodels
 pytest
 Flask
 sqlalchemy
+psycopg2
+

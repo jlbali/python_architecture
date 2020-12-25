@@ -1,7 +1,8 @@
 from domain.batch import Batch, allocate as alloc_domain
 from domain.order_line import OrderLine
-from typing import List
+from typing import List, Optional
 from adapters.repository_batch import AbstractBatchRepository
+from datetime import date
 
 
 class InvalidSku(Exception):
@@ -18,4 +19,12 @@ def allocate(line: OrderLine, repo: AbstractBatchRepository, session) -> str:
     batchref = alloc_domain(line, batches)
     session.commit()
     return batchref
+
+def add_batch(
+        ref: str, sku: str, qty: int, eta: Optional[date],
+        repo: AbstractBatchRepository, session,
+):
+    repo.add(Batch(ref, sku, qty, eta))
+    session.commit()
+
 

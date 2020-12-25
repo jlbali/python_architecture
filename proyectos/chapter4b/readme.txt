@@ -10,10 +10,10 @@ Tocando el objeto y haciendo commit ya se modifica en la base de datos (Ok)
 
 - Seguir con las cosas de la capa de servicio (chapter 4) y la ruta Flask.
     - Services Layer (Ok)
-    - Dockerization (Docker and docker-compose)
-    - Makefile
-    - endpints (flask_app y tests asociados en test_api.py)
-    - Arreglar el problema con los tests que fallan de API.
+    - Dockerization (Docker and docker-compose) (ok)
+    - Makefile (ok)
+    - endpints (flask_app y tests asociados en test_api.py) (ok)
+    - Arreglar el problema con los tests que fallan de API (ok)
     - Agregar un CRUD básico de Batches junto con sus tests en todos los niveles (faltan services y api).
 
 

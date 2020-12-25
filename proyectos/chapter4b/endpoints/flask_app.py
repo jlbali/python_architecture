@@ -18,14 +18,14 @@ app = Flask(__name__)
 
 
 @app.route("/ping", methods=['GET'])
-def add_batch():
+def ping():
     return 'pong', 200
 
 
 @app.route("/batch", methods=['POST'])
 def add_batch():
     session = get_session()
-    repo = batch_repository.SqlAlchemyRepository(session)
+    repo = batch_repository.SqlAlchemyBatchRepository(session)
     eta = request.json['eta']
     if eta is not None:
         eta = datetime.fromisoformat(eta).date()

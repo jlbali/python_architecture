@@ -9,7 +9,7 @@ import config
 @pytest.mark.usefixtures('restart_api')
 def test_ping():
     url = config.get_api_url()
-    r = requests.post(
+    r = requests.get(
         f'{url}/ping'
     )
     assert r.status_code == 200

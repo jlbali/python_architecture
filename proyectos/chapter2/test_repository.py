@@ -18,6 +18,21 @@ def test_repository_can_save_a_batch():
     assert rows == [("batch1", "SOAPDISH", 100, None)]
     clear_all()
 
+def test_repo_list_function():
+    session = get_session()
+    batch1 = model.Batch("batch1", "SOAPDISH", 100, eta=None)
+    batch2 = model.Batch("batch2", "FURNITURE", 50, eta=None)
+
+    repo = repository.SqlAlchemyBatchRepository(session)
+    repo.add(batch1)
+    repo.add(batch2)
+    session.commit()
+    retrieved = repo.list()
+
+    assert retrieved == [batch1,batch2]
+    clear_all()
+
+
 
 def insert_order_line(session):
     query = """
@@ -72,5 +87,5 @@ def test_repository_can_retrieve_a_batch_with_allocations():
     assert retrieved._allocations == {
         model.OrderLine("order1", "SOFA", 12)
     }
-
+    clear_all()
 

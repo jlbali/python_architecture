@@ -1,25 +1,10 @@
 import pytest
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, clear_mappers
 
-from orm import metadata, start_mappers
 import model
 from datetime import date
+from common_test import get_session, clear_all
 
 
-### COMMON STUFF ###########
-
-def get_in_memory_db():
-    engine = create_engine("sqlite:///:memory:")
-    metadata.create_all(engine)
-    return engine
-
-def get_session():
-    start_mappers()
-    return sessionmaker(bind=get_in_memory_db())()
-
-def clear_all():
-    clear_mappers()
 
 ### END INIT STUFF
 

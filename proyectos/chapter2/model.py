@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from datetime import date
 from typing import Optional, List, Set, NewType
 
+# El id podría ser parte del modelo...
+
 @dataclass(unsafe_hash=True)
 class OrderLine:
     ref: str

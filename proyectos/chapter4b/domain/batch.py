@@ -49,6 +49,15 @@ class Batch:
         if other.eta is None:
             return True
         return self.eta > other.eta
+    
+    def as_dict(self):
+       #return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+       return {
+           "reference": self.reference,
+           "sku": self.sku,
+           "_purchased_quantity": self._purchased_quantity,
+           "eta": self.eta,
+       }
 
 
 

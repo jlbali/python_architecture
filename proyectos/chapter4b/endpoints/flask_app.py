@@ -31,24 +31,24 @@ def add_batch():
     eta = request.json['eta']
     if eta is not None:
         eta = datetime.fromisoformat(eta).date()
-    batch_services.add_batch(
+    id = batch_services.add_batch(
         request.json['ref'], request.json['sku'], request.json['qty'], eta,
         repo, session
     )
-    return 'OK', 201
+    return jsonify({'id': str(id)}), 201
 
 @app.route("/batch/<id>", methods=['GET'])
 def get_batch(id):
     session = get_session()
     repo = batch_repository.SqlAlchemyBatchRepository(session)
-    batch = batch_services.get_batch(id)
-    return jsonify(batch), 200
+    batch = batch_services.get_batch(id,repo)
+    return jsonify(batch.as_dict()), 200
 
 @app.route("/batches", methods=['GET'])
 def get_batches():
     session = get_session()
     repo = batch_repository.SqlAlchemyBatchRepository(session)
-    batches = batch_services.list()
+    batches = batch_services.get_batches(repo)
     return jsonify(batches), 200
 
 @app.route("/allocate", methods=['POST'])

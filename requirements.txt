@@ -16,4 +16,3 @@ pytest
 Flask
 sqlalchemy
 psycopg2
-

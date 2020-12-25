@@ -3,6 +3,10 @@ import pytest
 import requests
 
 import config
+from domain.batch import Batch
+from dateutil.parser import parse
+from dateutil.tz import tzutc
+from datetime import datetime
 
 def random_suffix():
     return uuid.uuid4().hex[:6]
@@ -24,6 +28,22 @@ def post_to_add_batch(ref, sku, qty, eta):
         json={'ref': ref, 'sku': sku, 'qty': qty, 'eta': eta}
     )
     assert r.status_code == 201
+    return int(r.json()["id"])
+
+def get_api_batch(id: int) -> Batch:
+    url = config.get_api_url()
+    r = requests.get(
+        f'{url}/batch/' + str(id)
+    )
+    assert r.status_code == 200
+    obj_json = r.json()
+
+    batch = Batch(obj_json["reference"], obj_json["sku"], int(obj_json["_purchased_quantity"]),
+        #datetime.fromisoformat(obj_json["eta"]).date()
+       parse(obj_json["eta"]),
+    )
+    batch.id = id
+    return batch
 
 
 @pytest.mark.usefixtures('postgres_db')
@@ -52,4 +72,17 @@ def test_unhappy_path_returns_400_and_error_message():
     r = requests.post(f'{url}/allocate', json=data)
     assert r.status_code == 400
     assert r.json()['message'] == f'Invalid sku {unknown_sku}'
+
+@pytest.mark.usefixtures('postgres_db')
+@pytest.mark.usefixtures('restart_api')
+def test_add_and_get_batch():
+    sku = random_sku()
+    reference = random_batchref(1)
+    id = post_to_add_batch(reference, sku, 100, '2011-01-02')
+    ret_batch = get_api_batch(id)
+    assert ret_batch.id == id
+    assert ret_batch.reference == reference
+    assert ret_batch.sku == sku
+    assert ret_batch._purchased_quantity == 100
+    assert ret_batch.eta == datetime(2011,1,2, tzinfo=tzutc())
 

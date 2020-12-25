@@ -6,10 +6,6 @@ from datetime import date
 from tests.common_test import get_session, clear_all
 
 
-
-### END INIT STUFF
-
-
 def test_orderline_mapper_can_load_lines():
     session = get_session()
     query = """

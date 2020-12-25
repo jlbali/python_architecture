@@ -18,6 +18,8 @@ Tocando el objeto y haciendo commit ya se modifica en la base de datos (Ok)
 
 - Faltan los tests para la API de get_batch y get_batches.
 
+- Para chapter 5, será necesario refactorizar código y reubicarlo en carpetas src y tests.
+
 
 
 

@@ -48,7 +48,7 @@ def get_batch(id):
 def get_batches():
     session = get_session()
     repo = batch_repository.SqlAlchemyBatchRepository(session)
-    batches = batch_services.get_batches(repo)
+    batches = [batch.as_dict() for batch in batch_services.get_batches(repo)]
     return jsonify(batches), 200
 
 @app.route("/allocate", methods=['POST'])

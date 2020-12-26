@@ -7,6 +7,7 @@ from domain.batch import Batch
 from dateutil.parser import parse
 from dateutil.tz import tzutc
 from datetime import datetime
+from typing import List
 
 def random_suffix():
     return uuid.uuid4().hex[:6]
@@ -44,6 +45,22 @@ def get_api_batch(id: int) -> Batch:
     )
     batch.id = id
     return batch
+
+def get_api_batches() -> List[Batch]:
+    url = config.get_api_url()
+    r = requests.get(
+        f'{url}/batches'
+    )
+    assert r.status_code == 200
+    objs_json = r.json()
+    #print(objs_json)
+    batches = []
+    for obj_json in objs_json:
+        eta = parse(obj_json["eta"]) if not obj_json["eta"] is None else None
+        batch = Batch(obj_json["reference"], obj_json["sku"], int(obj_json["_purchased_quantity"]), eta) 
+        batch.id = obj_json["id"]
+        batches.append(batch)
+    return batches
 
 
 @pytest.mark.usefixtures('postgres_db')
@@ -86,3 +103,16 @@ def test_add_and_get_batch():
     assert ret_batch._purchased_quantity == 100
     assert ret_batch.eta == datetime(2011,1,2, tzinfo=tzutc())
 
+@pytest.mark.usefixtures('postgres_db')
+@pytest.mark.usefixtures('restart_api')
+def test_get_batches():
+    sku1 = random_sku()
+    reference1 = random_batchref(1)
+    id1 = post_to_add_batch(reference1, sku1, 100, '2011-01-02')
+    sku2 = random_sku()
+    reference2 = random_batchref(1)
+    id2 = post_to_add_batch(reference2, sku2, 150, '2020-01-02')
+    batches = get_api_batches()
+    ids = [batch.id for batch in batches]
+    assert id1 in ids
+    assert id2 in ids
